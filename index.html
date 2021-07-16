@@ -99,7 +99,15 @@
                     },
                     { ...sourceImage, rotation: rotation + offsetRotation }
                   );
-                  console.log('Workaround, sourceImage:', sourceImage);
+                  console.log(
+                    'Workaround, sourceImage:',
+                    api.scene.get({
+                      id: canvasNode.id,
+                      plug: 'Image',
+                      operatorIndex: 1,
+                      property: 'sourceImage',
+                    })
+                  );
                   return;
                 }
               });
