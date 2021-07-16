@@ -5,12 +5,30 @@
     <title>Document</title>
   </head>
   <body>
+    <p>
+      In this setup the Model (17322a72-8623-4ef2-a733-01be8189bd82) has a plane
+      mesh called box. The box has a material on it called Canvas Material. This
+      material has a texture on it's baseMap called Canvas Test. This texture is
+      a canvas with a canvas composite operator that contains the picture /
+      texture. You can set the properties on the operator to move the composite
+      in relation to the canvas. In this example I'll rotate it every time you
+      click for simplicity sake.
+    </p>
     <div id="player" style="height: 1000px"></div>
     <script src="https://preview.threekit.com/app/js/threekit-player.js"></script>
     <script>
+      /* In this setup the Model (17322a72-8623-4ef2-a733-01be8189bd82) has a plane mesh called box. 
+       The box has a material on it called Canvas Material.
+       This material has a texture on it's baseMap called Canvas Test.
+       This texture is a canvas with a canvas composite operator that contains the picture / texture.
+       You can set the properties on the operator to move the composite in relation to the canvas.
+       In this example I'll rotate it every time you click for simplicity sake.
+       Some of the steps like getting each node can be skipped as you only need the reference.assetId 
+       and their purpose is for logging and clarity in this demo. */
       const AUTH_TOKEN = '91b79528-5da9-4fa1-b89d-20bb1670e652';
       const TK_ENV = 'https://preview.threekit.com/';
-      const api = threekitPlayer({
+      const offsetRotation = 15;
+      threekitPlayer({
         authToken: AUTH_TOKEN,
         el: document.getElementById('player'),
         assetId: '17322a72-8623-4ef2-a733-01be8189bd82',
@@ -29,14 +47,66 @@
               api.selectionSet.clear();
               if (!hit) return;
               hit.hierarchy.reverse().forEach((node) => {
-                if (node.type === 'PolyMesh');
-                api.selectionSet.add(node.nodeId);
-                console.log(nodeId);
-                return;
+                if (node.type === 'PolyMesh') {
+                  api.selectionSet.add(node.nodeId);
+                  console.log('Mesh node', api.scene.get({ id: node.nodeId }));
+                  const materialReference = api.scene.get({
+                    id: node.nodeId,
+                    plug: 'Material',
+                    property: 'reference',
+                  });
+                  const materialNode = api.scene.get({
+                    id: materialReference.assetId,
+                  });
+                  console.log('Material node', materialNode);
+                  const canvasReference = api.scene.get({
+                    id: materialNode.id,
+                    plug: 'Material',
+                    property: 'baseMap',
+                  });
+                  const canvasNode = api.scene.get({
+                    id: canvasReference.assetId,
+                  });
+                  console.log('Canvas node', canvasNode);
+                  const rotation = api.scene.get({
+                    id: canvasNode.id,
+                    plug: 'Image',
+                    operatorIndex: 1,
+                    property: 'rotation',
+                  });
+                  const sourceImage = api.scene.get({
+                    id: canvasNode.id,
+                    plug: 'Image',
+                    operatorIndex: 1,
+                    property: 'sourceImage',
+                  });
+                  api.scene.set(
+                    {
+                      id: canvasNode.id,
+                      plug: 'Image',
+                      operatorIndex: 1,
+                      property: 'rotation',
+                    },
+                    rotation + offsetRotation
+                  );
+                  console.log('Rotation', rotation + offsetRotation);
+                  api.scene.set(
+                    {
+                      id: canvasNode.id,
+                      plug: 'Image',
+                      operatorIndex: 1,
+                      property: 'sourceImage',
+                    },
+                    { ...sourceImage, rotation: rotation + offsetRotation }
+                  );
+                  console.log('Workaround, sourceImage:', sourceImage);
+                  return;
+                }
               });
             },
           },
         };
+        api.tools.addTool(selectionTool);
       });
     </script>
   </body>
