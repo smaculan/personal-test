@@ -5,7 +5,7 @@
     <title>Document</title>
   </head>
   <body>
-    <div id="player" style="height: 500px"></div>
+    <div id="player" style="height: 1000px"></div>
     <script src="https://preview.threekit.com/app/js/threekit-player.js"></script>
     <script>
       const AUTH_TOKEN = '91b79528-5da9-4fa1-b89d-20bb1670e652';
@@ -17,6 +17,26 @@
         showConfigurator: false,
       }).then((api) => {
         window.api = api;
+        const selectionTool = {
+          key: 'customselect',
+          label: 'Select',
+          active: true,
+          enabled: true,
+          handlers: {
+            click: async (ev) => {
+              console.log(ev);
+              const hit = ev.hitNodes[0];
+              api.selectionSet.clear();
+              if (!hit) return;
+              hit.hierarchy.reverse().forEach((node) => {
+                if (node.type === 'PolyMesh');
+                api.selectionSet.add(node.nodeId);
+                console.log(nodeId);
+                return;
+              });
+            },
+          },
+        };
       });
     </script>
   </body>
