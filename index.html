@@ -1,0 +1,23 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div id="player" style="height: 500px"></div>
+    <script src="https://preview.threekit.com/app/js/threekit-player.js"></script>
+    <script>
+      const AUTH_TOKEN = '91b79528-5da9-4fa1-b89d-20bb1670e652';
+      const TK_ENV = 'https://preview.threekit.com/';
+      const api = threekitPlayer({
+        authToken: AUTH_TOKEN,
+        el: document.getElementById('player'),
+        assetId: '17322a72-8623-4ef2-a733-01be8189bd82',
+        showConfigurator: false,
+      }).then((api) => {
+        window.api = api;
+      });
+    </script>
+  </body>
+</html>
